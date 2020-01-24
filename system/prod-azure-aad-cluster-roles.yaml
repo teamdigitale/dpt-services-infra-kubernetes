@@ -1,0 +1,16 @@
+---
+
+# Bind the admin AD group to the cluster-admin role
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+ name: cluster-admins
+roleRef:
+ apiGroup: rbac.authorization.k8s.io
+ kind: ClusterRole
+ name: cluster-admin
+subjects:
+- apiGroup: rbac.authorization.k8s.io
+  kind: Group
+  # dpt-services-prod-group-k8s-admins
+  name: "8ede2ddb-1c74-44dc-8ea5-dfc5648537c4"

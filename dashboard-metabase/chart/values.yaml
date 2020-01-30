@@ -1,0 +1,130 @@
+---
+
+global:
+  registry: ''
+
+postgresql:
+  global:
+    postgresql:
+      postgresqlDatabase: dashboard
+      postgresqlUsername: dipartimentoinnovazione
+      existingSecret: dashboard-metabase-secrets
+  persistence:
+    existingClaim: dashboard-metabase-postgres
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+
+mongodb:
+  mongodbDatabase: monitor_mdb
+  mongodbUsername: dipartimentoinnovazione
+  existingSecret: dashboard-metabase-secrets
+  persistence:
+    existingClaim: dashboard-metabase-mongodb-data
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 6Gi
+    limits:
+      cpu: 2000m
+      memory: 10Gi
+
+metabase:
+  database:
+    type: postgres
+    host: dashboard-metabase-postgresql
+    dbname: dashboard
+    existingSecret: dashboard-metabase-secrets
+    existingSecretUsernameKey: postgresql-username
+    existingSecretPasswordKey: postgresql-password
+    timeZone: timeZone=Europe/Rome
+  ingress:
+    enabled: "true"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/ssl-redirect: false
+    hosts:
+      - dashboards.innovazione.gov.it
+    path: /
+    tls:
+      - hosts:
+          - dashboards.innovazione.gov.it
+        secretName: dashboard-metabase-prod-tls
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 4Gi
+    limits:
+      cpu: 3000m
+      memory: 8Gi
+
+dashboard:
+  images:
+    dashboard_scripts:
+      repository: teamdigitale/pdnd-dashboard-scripts
+      tag: "snapshot"
+      pullPolicy: Always
+
+  dashboard_scripts:
+    mongodb_host: dashboard-metabase-mongodb
+    mongodb_db: monitor_mdb
+    mongodb_db_authdb: monitor_mdb
+    mongodb_db_user: dipartimentoinnovazione
+
+    cie_cron_schedule: "10 6-23 * * *"
+    cie_datadir: /opt/ingestion_scripts/data/cie
+    cie_env: production
+    cie_secret_name: dashboard-secret-cie
+    cie_storage_account_share_name: dpt-services-prod-sashare-cie
+
+    spid_cron_schedule: "0 6-23 * * *"
+    spid_datadir: /tmp
+    spid_env: production
+    spid_secret_name: dashboard-secret-spid
+    spid_storage_account_share_name: dpt-services-prod-sashare-spid
+
+    devitalia_cron_schedule: "1 2 * * *"
+    devitalia_datadir: /tmp
+    devitalia_env: production
+
+  resources:
+    # For each of the following objects, set limits
+    # removing the curly brackets after resources and
+    # uncommenting the lines below.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+    dashboard_scripts_devitalia:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+    dashboard_scripts_spid:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+    dashboard_scripts_cie:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+
+  nodeSelector: {}
+
+  tolerations: {}
+
+  affinity: {}

@@ -1,0 +1,94 @@
+---
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "dashboard.fullname" . }}-script-devitalia
+spec:
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  schedule: "{{ .Values.dashboard.dashboard_scripts.devitalia_cron_schedule }}"
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: "{{ template "dashboard.fullname" . }}-scripts-devitalia"
+        spec:
+          containers:
+          - name: {{ template "dashboard.fullname" . }}-script-devitalia
+            image: "{{ .Values.global.registry }}{{ .Values.dashboard.images.dashboard_scripts.repository }}:{{ tpl .Values.dashboard.images.dashboard_scripts.tag . }}"
+            imagePullPolicy: {{ .Values.dashboard.images.dashboard_scripts.pullPolicy }}
+            command: ["/bin/sh"]
+            args: ["-c", "/opt/ingestion_scripts/devitalia/fetch.sh && /opt/ingestion_scripts/devitalia/process.sh"]
+            resources:
+{{ toYaml .Values.dashboard.resources.dashboard_scripts_devitalia | indent 14 }}
+            env:
+              - name: MONGODB_HOST
+                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_host }}"
+              - name: MONGODB_DB
+                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_db }}"
+              - name: MONGODB_DB_AUTHDB
+                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_db_authdb }}"
+              - name: MONGODB_DB_USER
+                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_db_user }}"
+              - name: MONGODB_DB_PASS
+                valueFrom:
+                  secretKeyRef:
+                    name: dashboard-metabase-secrets
+                    key: mongodb-password
+              - name: DEVITALIA_DATADIR
+                value: "{{ .Values.dashboard.dashboard_scripts.devitalia_datadir }}"
+              - name: DEVITALIA_ENV
+                value: "{{ .Values.dashboard.dashboard_scripts.devitalia_env }}"
+              - name: TOKEN_GITHUB
+                valueFrom:
+                  secretKeyRef:
+                    name: dashboard-secret-devitalia
+                    key: TOKEN_GITHUB
+              - name: TOKEN_SLACK
+                valueFrom:
+                  secretKeyRef:
+                    name: dashboard-secret-devitalia
+                    key: TOKEN_SLACK
+              - name: FORUM_API_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: dashboard-secret-devitalia
+                    key: FORUM_API_KEY
+              - name: GOOGLE_WPID
+                valueFrom:
+                  secretKeyRef:
+                    name: dashboard-secret-devitalia
+                    key: GOOGLE_WPID                    
+              - name: GOOGLE_PROJECT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: dashboard-secret-devitalia
+                    key: GOOGLE_PROJECT_ID
+              - name: GOOGLE_PRIVATE_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: dashboard-secret-devitalia
+                    key: GOOGLE_PRIVATE_ID
+              - name: GOOGLE_PRIVATE_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: dashboard-secret-devitalia
+                    key: GOOGLE_PRIVATE_KEY
+              - name: GOOGLE_CLIENT_EMAIL
+                valueFrom:
+                  secretKeyRef:
+                    name: dashboard-secret-devitalia
+                    key: GOOGLE_CLIENT_EMAIL
+              - name: GOOGLE_CLIENT_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: dashboard-secret-devitalia
+                    key: GOOGLE_CLIENT_ID
+              - name: GOOGLE_CLIENT_X509_CERT_URL
+                valueFrom:
+                  secretKeyRef:
+                    name: dashboard-secret-devitalia
+                    key: GOOGLE_CLIENT_X509_CERT_URL
+          restartPolicy: OnFailure

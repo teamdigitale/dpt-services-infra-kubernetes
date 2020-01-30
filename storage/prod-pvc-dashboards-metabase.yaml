@@ -1,0 +1,34 @@
+---
+
+# Storage class could be either default (standard) or managed-premium
+# See differences here: https://docs.microsoft.com/it-it/azure/aks/azure-disks-dynamic-pv
+
+apiVersion: v1
+
+kind: PersistentVolumeClaim
+metadata:
+  name: dashboard-metabase-postgres
+  namespace: dashboards
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: managed-premium-custom
+  resources:
+    requests:
+      storage: 10Gi
+
+---
+
+apiVersion: v1
+
+kind: PersistentVolumeClaim
+metadata:
+  name: dashboard-metabase-mongodb-data
+  namespace: dashboards
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: managed-premium-custom
+  resources:
+    requests:
+      storage: 10Gi

@@ -139,18 +139,26 @@ helm repo update
 Installation:
 
 ```shell
-helm install spv-charts/azure-key-vault-env-injector \
-    -n key-vault-env-injector \
-    --set installCrd=false
+kubectl create namespace azurekeyvault
 
-helm install spv-charts/azure-key-vault-controller \
-    -n key-vault-controller
+helm install \
+    --set installCrd=false \
+    --version 0.1.23 \
+    --namespace azurekeyvault \
+    key-vault-controller \
+    spv-charts/azure-key-vault-controller
+
+helm install \
+    --version 0.1.5 \
+    --namespace azurekeyvault \
+    key-vault-env-injector \
+    spv-charts/azure-key-vault-env-injector
 ```
 
 Enable the automatic env variables injection for all containers in the default namespace:
 
 ```shell
-kubectl apply -f system/azure-key-vault.yaml
+kubectl apply -f system/common-azure-key-vault.yaml
 ```
 
 Each chart that makes use of one or more secrets already contains an *azure-key-vault-secrets.yaml* file that creates

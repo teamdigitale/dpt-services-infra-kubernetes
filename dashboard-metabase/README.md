@@ -69,10 +69,14 @@ The value of the secret should be in the following format:
 }
 ```
 
-Once the secret has been created sync it in Kubernetes:
+### Add basic auth as an extra-protection for the Metabase admin page
 
 ```shell
-kubectl apply -f dashboard-metabase/secrets-prod-dashboard-metabase.yaml
+# Create the basic-auth file
+htpasswd -c auth THE-USER-YOU-WANT
+
+# Add it as a secret in Kubernetes
+kubectl create secret generic admin-basic-auth --from-file=auth
 ```
 
 ### Install the charts and its dependencies
@@ -103,25 +107,25 @@ In this specific configuration, Metabase uses two databases to provide different
 
 The databases are automatically installed by the main dashboard chart as dependencies, using the official database charts. You can see more in the installation section below.
 
-## Import data from old Postgres deployments
+### Import data from old Postgres deployments
 
 To export data from Postgres, enter the old container. Then, use pg_dump to export your data. Finally, copy the file to your local machine.
 
 ```shell
-kubectl exec -it dashboard-postgresql-bdfaggafdd-retrw /bin/bash
+kubectl exec -n dashboards -it dashboard-postgresql-bdfaggafdd-retrw /bin/bash
 
 pg_dump -U postgres -W -F t metabase > /tmp/postgres.tar
 exit
 
-kubectl cp dashboard-postgresql-bdfaggafdd-retrw:/tmp/postgres.tar /tmp/postgres.tar
+kubectl cp -n dashboards dashboard-postgresql-bdfaggafdd-retrw:/tmp/postgres.tar /tmp/postgres.tar
 ```
 
 To restore the exported data, copy the database backup file to the container. Then, enter in the new Postgres container and make sure no old data are present, dropping the schema and re-creating it. Finally, restore the data with the *pg_restore* tool.
 
 ```shell
-kubectl cp postgres.tar dashboard-postgresql-6fd55f699d-srqxl:/tmp/postgres.tar
+kubectl cp -n dashboards postgres.tar dashboard-postgresql-6fd55f699d-srqxl:/tmp/postgres.tar
 
-kubectl exec -it dashboard-postgresql-6fd55f699d-srqxl /bin/bash
+kubectl exec -n dashboards -it dashboard-postgresql-6fd55f699d-srqxl /bin/bash
 
 psql -U metabase -d metabase
 DROP SCHEMA IF EXISTS public CASCADE;
@@ -133,43 +137,32 @@ pg_restore -U metabase -d metabase /tmp/postgres.tar
 exit
 ```
 
-## Import data from old MongoDB deployments
+### Import data from old MongoDB deployments
 
 To export data from MongoDB, enter the old MongoDB container. Then, tar the file to make it smaller and copy it to your computer
 
 ```shell
-kubectl exec -it dashboard-mongodb-7sadfafad-abvcx /bin/bash
+kubectl exec -n dashboards -it dashboard-mongodb-7sadfafad-abvcx /bin/bash
 
 cd /tmp
 mongodump -u 'teamdigitale' -p '<mongodb password>' --authenticationDatabase "monitor_mdb" -d monitor_mdb  -o .
 tar -czf mongodb.tar.gz monitor_mdb
 exit
 
-kubectl cp dashboard-mongodb-7sadfafad-abvcx:/tmp/mongodb.tar.gz ~/tmp/mongodb.tar.gz
+kubectl cp -n dashboards dashboard-mongodb-7sadfafad-abvcx:/tmp/mongodb.tar.gz ~/tmp/mongodb.tar.gz
 ```
 
 Let's start the export. Copy the MongoDB dump file to the new container using *kubectl cp*:
 
 ```shell
-kubectl cp /tmp/mongodb.tar.gz dashboard-mongodb-6fd55f699d-srqxl:/tmp/mongodb.tar.gz
+kubectl cp -n dashboards /tmp/mongodb.tar.gz dashboard-mongodb-6fd55f699d-srqxl:/tmp/mongodb.tar.gz
 ```
 
 Enter again the MongoDB container, untar the file and restore the data using the *mongorestore* tool:
 
 ```shell
-kubectl exec -it dashboard-mongodb-6fd55f699d-srqxl /bin/bash
+kubectl exec -n dashboards -it dashboard-mongodb-6fd55f699d-srqxl /bin/bash
 cd /tmp
 tar -xvzf mongodb.tar.gz
 mongorestore --host localhost:27017 --username teamdigitale --password '<your-mongodb-password>' --authenticationDatabase monitor_mdb --db monitor_mdb monitor_mdb
-```
-
-## Install the chart
-
-You can now proceed and install this helm-chart and its dependencies.
-
-For example, if not other configuration files (i.e. production configs) need to be applied, you can run:
-
-```shell
-helm dep update
-helm install [-f configs/<an-optional-config>] -n dashboard dashboard
 ```

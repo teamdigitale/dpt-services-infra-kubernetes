@@ -44,51 +44,51 @@ spec:
               - name: TOKEN_GITHUB
                 valueFrom:
                   secretKeyRef:
-                    name: dashboard-secret-devitalia
-                    key: TOKEN_GITHUB
+                    name: dashboard-metabase-secrets
+                    key: token_github
               - name: TOKEN_SLACK
                 valueFrom:
                   secretKeyRef:
-                    name: dashboard-secret-devitalia
-                    key: TOKEN_SLACK
+                    name: dashboard-metabase-secrets
+                    key: token_slack
               - name: FORUM_API_KEY
                 valueFrom:
                   secretKeyRef:
-                    name: dashboard-secret-devitalia
-                    key: FORUM_API_KEY
+                    name: dashboard-metabase-secrets
+                    key: forum_api_key
               - name: GOOGLE_WPID
                 valueFrom:
                   secretKeyRef:
-                    name: dashboard-secret-devitalia
-                    key: GOOGLE_WPID                    
+                    name: dashboard-metabase-secrets
+                    key: google_wpid
               - name: GOOGLE_PROJECT_ID
                 valueFrom:
                   secretKeyRef:
-                    name: dashboard-secret-devitalia
-                    key: GOOGLE_PROJECT_ID
+                    name: dashboard-metabase-secrets
+                    key: google_project_id
               - name: GOOGLE_PRIVATE_ID
                 valueFrom:
                   secretKeyRef:
-                    name: dashboard-secret-devitalia
-                    key: GOOGLE_PRIVATE_ID
+                    name: dashboard-metabase-secrets
+                    key: google_private_id
               - name: GOOGLE_PRIVATE_KEY
                 valueFrom:
                   secretKeyRef:
-                    name: dashboard-secret-devitalia
-                    key: GOOGLE_PRIVATE_KEY
+                    name: dashboard-metabase-secrets
+                    key: google_private_key
               - name: GOOGLE_CLIENT_EMAIL
                 valueFrom:
                   secretKeyRef:
-                    name: dashboard-secret-devitalia
-                    key: GOOGLE_CLIENT_EMAIL
+                    name: dashboard-metabase-secrets
+                    key: google_client_email
               - name: GOOGLE_CLIENT_ID
                 valueFrom:
                   secretKeyRef:
-                    name: dashboard-secret-devitalia
-                    key: GOOGLE_CLIENT_ID
+                    name: dashboard-metabase-secrets
+                    key: google_client_id
               - name: GOOGLE_CLIENT_X509_CERT_URL
                 valueFrom:
                   secretKeyRef:
-                    name: dashboard-secret-devitalia
-                    key: GOOGLE_CLIENT_X509_CERT_URL
+                    name: dashboard-metabase-secrets
+                    key: google_client_x509_cert_url
           restartPolicy: OnFailure

@@ -18,6 +18,9 @@ out/
 **/secrets.yaml
 **/secrets
 
+# Web server auth file
+**/auth
+
 # Possible charts fetched along the installation
 azure-key-vault-env-injector
 azure-key-vault-controller

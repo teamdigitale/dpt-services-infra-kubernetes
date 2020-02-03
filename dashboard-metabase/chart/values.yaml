@@ -52,7 +52,7 @@ metabase:
       nginx.ingress.kubernetes.io/use-regex: "true"
     hosts:
       - dashboards.innovazione.gov.it
-    path: "/(app/dist/.*)|(app/assets/.*)|(api/user/current)|(api/session)|(api/setting)|public"
+    path: "/(app/dist/.*)|(app/assets/.*)|(api/user/current)|(api/session)|(api/setting)|(api/geojson)|public"
   ingress_admin:
     enabled: "true"
     annotations:

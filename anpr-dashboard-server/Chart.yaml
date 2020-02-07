@@ -1,0 +1,9 @@
+---
+
+apiVersion: v1
+
+name: anpr-dashboard-server
+description: Service to expose data about the migration status of Italian municipalities to the National Registry.
+
+version: 0.1.0
+appVersion: "0.1.0"

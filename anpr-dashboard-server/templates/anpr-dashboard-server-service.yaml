@@ -1,0 +1,20 @@
+---
+
+apiVersion: v1
+
+kind: Service
+metadata:
+  name: {{ template "anpr-dashboard-server.fullname" . }}-http
+  labels:
+    app: {{ template "anpr-dashboard-server.name" . }}
+    chart: {{ template "anpr-dashboard-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  type: {{ .Values.anprDashboardServer.services.httpPort.type }}
+  ports:
+    - name: anpr-srv-http
+{{ toYaml .Values.anprDashboardServer.services.httpPort | indent 6 }}
+  selector:
+    app: {{ template "anpr-dashboard-server.name" . }}
+    release: {{ .Release.Name }}

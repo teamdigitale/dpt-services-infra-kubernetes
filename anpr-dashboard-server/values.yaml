@@ -1,0 +1,65 @@
+---
+
+global:
+  registry: ''
+
+anprDashboardServer:
+  images:
+    anprDashboardServer:
+      repository: docker.io/teamdigitale/anpr-dashboard
+      tag: latest
+      pullPolicy: Always
+    anprDashboardServerCronjob:
+      repository: docker.io/teamdigitale/anpr-dashboard-cronjob
+      tag: latest
+      pullPolicy: Always
+
+  services:
+    httpPort:
+      port: 8080
+
+  ingress:
+    enabled: "true"
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+      nginx.ingress.kubernetes.io/use-regex: "true"
+    hosts:
+      - dashboard.anpr.it
+    path: /
+
+  anprDashboardServerCronjobSchedule: "0 * * * *"
+
+  secrets:
+    anprDashboardServer:
+      - config
+      - cookie-creds
+      - email-creds
+      - oauth-creds
+    anprDashboardServerCronjob:
+      keys:
+        - base-url
+        - anpr-dashboard-apikey
+        - share-id
+
+  resources:
+    anprDashboardServer:
+      requests:
+        cpu: 1000m
+        memory: 1Gi
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+    anprDashboardServerCronjob:
+      requests:
+        cpu: 1000m
+        memory: 256M
+      limits:
+        cpu: 1000m
+        memory: 256M
+
+  nodeSelector: {}
+
+  tolerations: {}
+
+  affinity: {}

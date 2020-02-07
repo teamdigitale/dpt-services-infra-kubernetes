@@ -1,0 +1,33 @@
+---
+
+# Database
+apiVersion: v1
+
+kind: PersistentVolumeClaim
+metadata:
+  name: anpr-dashboard-server-db
+  namespace: anpr
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefile-standard
+  resources:
+    requests:
+      storage: 5Gi
+
+---
+
+# Cache
+apiVersion: v1
+
+kind: PersistentVolumeClaim
+metadata:
+  name: anpr-dashboard-server-cache
+  namespace: anpr
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefile-standard
+  resources:
+    requests:
+      storage: 5Gi

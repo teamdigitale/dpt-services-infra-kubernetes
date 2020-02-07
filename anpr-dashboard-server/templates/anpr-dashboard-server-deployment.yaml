@@ -1,0 +1,114 @@
+---
+
+apiVersion: apps/v1beta2
+
+kind: Deployment
+metadata:
+  name: {{ template "anpr-dashboard-server.fullname" . }}
+  labels:
+    app: {{ template "anpr-dashboard-server.name" . }}
+    chart: {{ template "anpr-dashboard-server.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    keel.sh/policy: major
+    keel.sh/approvals: "1"
+    keel.sh/trigger: poll
+  annotations:
+    keel.sh/pollSchedule: "@every 1m"
+spec:
+  replicas: {{ .Values.anprDashboardServer.replicaCount }}
+  {{- if .Values.anprDashboardServer.strategy }}
+  {{- with .Values.anprDashboardServer.strategy }}
+  strategy:
+    type: {{ toYaml .type }}
+    rollingUpdate:
+      maxUnavailable: {{ toYaml .rollingUpdate.maxUnavailable }}
+      maxSurge: {{ toYaml .rollingUpdate.maxSurge }}
+  {{- end }}
+  {{- end }}
+  revisionHistoryLimit: {{ .Values.anprDashboardServer.revisionHistoryLimit }}
+  selector:
+    matchLabels:
+      app: {{ template "anpr-dashboard-server.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "anpr-dashboard-server.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        timestamp: "{{ date "20060102150405" .Release.Time }}"
+    spec:
+      containers:
+        - name: anpr-dashboard-server
+          image: "{{ .Values.global.registry }}{{ .Values.anprDashboardServer.images.anprDashboardServer.repository }}:{{ tpl .Values.anprDashboardServer.images.anprDashboardServer.tag . }}"
+          imagePullPolicy: {{ .Values.anprDashboardServer.images.anprDashboardServer.pullPolicy }}
+
+          command: ["/srv/anpr/server/dashboard"]
+          args:
+            - "--http-listen-on=[::]:8080"
+            - "--config-file=/srv/anpr/vault/config/data"
+            - "--cookie-creds=/srv/anpr/vault/cookie-creds/data"
+            - "--email-creds=/srv/anpr/vault/email-creds/data"
+            - "--oauth-creds=/srv/anpr/vault/oauth-creds/data"
+            - "--web-templates=/srv/anpr/server/templates/"
+            - "--email-templates=/srv/anpr/server/emails/"
+            - "--static-content=/srv/anpr/server/static/"
+          volumeMounts:
+            - name: db
+              mountPath: /srv/anpr/db
+              readOnly: false
+            - name: cache
+              mountPath: /var/cache/dashboard_scripts
+              readOnly: false
+            {{- range .Values.anprDashboardServer.secrets.anprDashboardServer }}
+            - name: secrets-{{ . }}
+              mountPath: /srv/anpr/vault/{{ . }}
+              readOnly: true
+            {{- end }}
+
+          {{- if .Values.anprDashboardServer.livenessProbe }}
+          {{- with .Values.anprDashboardServer.livenessProbe }}
+          livenessProbe:
+            httpGet:
+              path: {{ toYaml .httpGet.path }}
+              port: {{ toYaml .httpGet.port }}
+            initialDelaySeconds: {{ toYaml .initialDelaySeconds }}
+            timeoutSeconds: {{ toYaml .timeoutSeconds }}
+            periodSeconds: {{ toYaml .periodSeconds }}
+            failureThreshold: {{ toYaml .failureThreshold }}
+          {{- end }}
+          {{- end }}
+
+          ports:
+            - name: anpr-srv-http
+              containerPort: {{ .Values.anprDashboardServer.services.httpPort.port }}
+              protocol: {{ .Values.anprDashboardServer.services.httpPort.protocol }}
+
+          resources:
+{{ toYaml .Values.anprDashboardServer.resources.anprDashboardServer | indent 12 }}
+    {{- with .Values.anprDashboardServer.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.anprDashboardServer.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.anprDashboardServer.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+      volumes:
+        - name: db
+          persistentVolumeClaim:
+            claimName: anpr-dashboard-server-db
+        - name: cache
+          persistentVolumeClaim:
+            claimName: anpr-dashboard-server-cache
+        {{- range .Values.anprDashboardServer.secrets.anprDashboardServer }}
+        - name: secrets-{{ . }}
+          secret:
+            secretName: anpr-dashboard-server-secrets-{{ . }}
+        {{- end }}

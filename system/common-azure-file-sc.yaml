@@ -1,3 +1,4 @@
+
 ---
 
 kind: StorageClass
@@ -8,13 +9,16 @@ reclaimPolicy: Retain
 provisioner: kubernetes.io/azure-file
 allowVolumeExpansion: true
 mountOptions:
-  - mfsymlinks
   - dir_mode=0777
   - file_mode=0777
   - uid=1000
   - gid=1000
+  - mfsymlinks
+  - nobrl
+  - cache=none
 parameters:
   skuName: Standard_LRS
+  kind: Managed
 
 ---
 
@@ -26,10 +30,13 @@ reclaimPolicy: Retain
 provisioner: kubernetes.io/azure-file
 allowVolumeExpansion: true
 mountOptions:
-  - mfsymlinks
   - dir_mode=0777
   - file_mode=0777
   - uid=1000
   - gid=1000
+  - mfsymlinks
+  - nobrl
+  - cache=none
 parameters:
   skuName: Premium_LRS
+  kind: Managed

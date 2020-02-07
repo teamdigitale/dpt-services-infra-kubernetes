@@ -15,7 +15,6 @@ out/
 **/*.retry
 **/*.lock
 **/charts
-**/secrets.yaml
 **/secrets
 
 # Web server auth file

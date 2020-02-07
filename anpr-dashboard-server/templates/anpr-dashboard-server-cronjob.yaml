@@ -1,0 +1,46 @@
+---
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ template "anpr-dashboard-server.fullname" . }}
+spec:
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+
+  schedule: "{{ .Values.anprDashboardServer.anprDashboardServerCronjobSchedule }}"
+
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: "{{ template "anpr-dashboard-server.fullname" . }}"
+        spec:
+          restartPolicy: OnFailure
+
+          containers:
+          - name: {{ template "anpr-dashboard-server.fullname" . }}
+            image: "{{ .Values.global.registry }}{{ .Values.anprDashboardServer.images.anprDashboardServerCronjob.repository }}:{{ tpl .Values.anprDashboardServer.images.anprDashboardServerCronjob.tag . }}"
+            imagePullPolicy: {{ .Values.anprDashboardServer.images.anprDashboardServerCronjob.pullPolicy }}
+
+            env:
+              # Secrets
+              {{- range .Values.anprDashboardServer.secrets.anprDashboardServerCronjob.keys }}
+              {{- $azureSecretKeyNameUpper := . | upper }}
+              - name: {{ regexReplaceAll "-" $azureSecretKeyNameUpper "_" }}
+                value: anpr-dashboard-server-cronjob-secrets@azurekeyvault?{{ . }}
+              {{- end }}
+
+            volumeMounts:
+              - name: cache
+                mountPath: /var/cache/dashboard_scripts
+                readOnly: false
+
+            resources:
+{{ toYaml .Values.anprDashboardServer.resources.anprDashboardServerCronjob | indent 14 }}
+
+          volumes:
+            - name: cache
+              persistentVolumeClaim:
+                claimName: anpr-dashboard-server-cache

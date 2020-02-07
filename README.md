@@ -169,35 +169,6 @@ Each chart that makes use of one or more secrets already contains an *azure-key-
 
 * Moreover, environment variables are imported in the *deployment.yaml* files with the value format `name-of-the-variable@azurekeyvault`
 
-#### Deploy the cert-manager
-
-The cert-manager is a Kubernetes component that takes care of adding and renewing TLS certificates for any virtual host specified in the ingress, through the integration with some providers (i.e. letsencrypt) .
-
-> **Warning:** If the first command generates a validation error, you should update the *kubectl* client.
-
-To deploy the cert-manager run:
-
-```shell
-kubectl create namespace cert-manager
-
-helm repo add jetstack https://charts.jetstack.io
-helm repo update
-
-helm install \
-    --namespace cert-manager \
-    --version v0.13.0 \
-    cert-manager \
-    jetstack/cert-manager
-```
-
-#### Apply cert-manager issuers
-
-To integrate the cert-manager with the *letsencrypt certificate issuer*, run:
-
-```shell
-kubectl apply -f system/common-cert-manager-issuers.yaml
-```
-
 #### Deploy the ingress controller
 
 The nginx ingress controller works as a reverse proxy, routing requests from the Internet to the applications living in the cluster. All applications DNS names are resolved to a single, public static IP address, that must be pre-provisioned on Azure.
@@ -226,8 +197,6 @@ Each helm chart configures one or more of the following services:
 * Services and load balancers
 
 * Nginx ingress rules (if any)
-
-* Certificate requests (if any)
 
 To list existing deployments
 

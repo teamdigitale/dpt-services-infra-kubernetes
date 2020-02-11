@@ -20,7 +20,7 @@ spec:
             image: "{{ .Values.global.registry }}{{ .Values.dashboard.images.dashboard_scripts.repository }}:{{ tpl .Values.dashboard.images.dashboard_scripts.tag . }}"
             imagePullPolicy: {{ .Values.dashboard.images.dashboard_scripts.pullPolicy }}
             command: ["/bin/sh"]
-            args: ["-c", "/opt/ingestion_scripts/cie/process.sh"]
+            args: ["-c", "source /opt/ingestion_scripts/cie/process.sh"]
             resources:
 {{ toYaml .Values.dashboard.resources.dashboard_scripts_cie | indent 14 }}
             env:

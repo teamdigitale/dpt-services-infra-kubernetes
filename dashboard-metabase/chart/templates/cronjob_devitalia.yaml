@@ -20,7 +20,7 @@ spec:
             image: "{{ .Values.global.registry }}{{ .Values.dashboard.images.dashboard_scripts.repository }}:{{ tpl .Values.dashboard.images.dashboard_scripts.tag . }}"
             imagePullPolicy: {{ .Values.dashboard.images.dashboard_scripts.pullPolicy }}
             command: ["/bin/sh"]
-            args: ["-c", "/opt/ingestion_scripts/devitalia/fetch.sh && /opt/ingestion_scripts/devitalia/process.sh"]
+            args: ["-c", "source /opt/ingestion_scripts/devitalia/fetch.sh && source /opt/ingestion_scripts/devitalia/process.sh"]
             resources:
 {{ toYaml .Values.dashboard.resources.dashboard_scripts_devitalia | indent 14 }}
             env:

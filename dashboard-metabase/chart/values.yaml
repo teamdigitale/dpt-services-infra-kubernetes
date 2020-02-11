@@ -78,8 +78,8 @@ metabase:
 dashboard:
   images:
     dashboard_scripts:
-      repository: teamdigitale/pdnd-dashboard-scripts
-      tag: "snapshot"
+      repository: teamdigitale/dpt-services-dashboard-scripts
+      tag: latest
       pullPolicy: Always
 
   dashboard_scripts:

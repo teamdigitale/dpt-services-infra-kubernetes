@@ -4,6 +4,17 @@ global:
   registry: ''
 
 anprDashboardServer:
+  keel:
+    policy: major
+    trigger: poll
+    pollSchedule: "@every 1m"
+    approvals: "1"
+    images:
+      - repository: anprDashboardServer.images.anprDashboardServer.repository
+        tag: anprDashboardServer.images.anprDashboardServer.tag
+      - repository: anprDashboardServer.images.anprDashboardServerCronjob.repository
+        tag: anprDashboardServer.images.anprDashboardServerCronjob.tag
+
   images:
     anprDashboardServer:
       repository: docker.io/teamdigitale/anpr-dashboard

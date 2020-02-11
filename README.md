@@ -1,8 +1,8 @@
-# Kubernetes configuration scripts for Department of Innovation
+# Kubernetes configuration scripts for the Italian Digital Transformation Department
 
 The repository contains the Kubernetes configurations used to setup the Department of Innovation Kubernetes resources after they've been provisioned with [Terraform](https://github.com/teamdigitale/dpt-services-infra-tf-live).
 
-## The Italian Department of Innovation
+## The Italian Department of Digital Transformation
 
 More informations about the Italian Department of Innovation can be found on the Department [website](https://innovazione.gov.it/)
 
@@ -185,6 +185,34 @@ helm install \
     -f system/prod-nginx-ingress-custom.yaml \
     ingress \
     stable/nginx-ingress
+```
+
+#### Deploy Keel to automate deployments
+
+> WARNING: Keel still supports Helm 2 ONLY. Please do not follow this section, until this warning is removed.
+
+[Keel](https://keel.sh/) helps to automate deployment activities.
+
+Before proceeding, make sure the [Keel bot](https://keel.sh/docs/#configuring-approvals-with-slack) is correctly configured in Slack.
+```shell
+# Create dedicated namespace
+kubectl create namespace keel
+
+# Add repo and update dependencies
+helm repo add keel-charts https://charts.keel.sh
+helm repo update
+
+# Install keel
+helm upgrade \
+    --install \
+    --set slack.enabled="true" \
+    --set slack.botName="keel" \
+    --set slack.channel="log_anpr" \
+    --set slack.approvalsChannel="log_anpr" \
+    --set slack.token="YOUR_SLACK_BOT_TOKEN" \
+    --namespace=keel \
+    keel \
+    keel-charts/keel
 ```
 
 ### Deploy applications

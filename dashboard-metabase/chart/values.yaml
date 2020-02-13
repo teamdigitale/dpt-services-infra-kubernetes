@@ -66,7 +66,6 @@ metabase:
       - host: dashboards.innovazione.gov.it
         paths:
           - /
-
   resources:
     requests:
       cpu: 1000m
@@ -83,10 +82,10 @@ dashboard:
       pullPolicy: Always
 
   dashboard_scripts:
-    mongodb_host: dashboard-metabase-mongodb
-    mongodb_db: monitor_mdb
-    mongodb_db_authdb: monitor_mdb
-    mongodb_db_user: dipartimentoinnovazione
+    mongodb_hostname: dashboard-metabase-mongodb
+    mongodb_database: monitor_mdb
+    mongodb_authdb: monitor_mdb
+    mongodb_username: dipartimentoinnovazione
 
     cie_cron_schedule: "10 6-23 * * *"
     cie_datadir: /opt/ingestion_scripts/data/cie
@@ -94,15 +93,17 @@ dashboard:
     cie_secret_name: dashboard-secret-cie
     cie_storage_account_share_name: dpt-services-prod-sashare-cie
 
+    devitalia_cron_schedule: "1 2 * * *"
+    devitalia_datadir: /tmp
+    devitalia_env: production
+
+    repubblica_digitale_cron_schedule: "0 0 * * *"
+
     spid_cron_schedule: "0 6-23 * * *"
     spid_datadir: /tmp
     spid_env: production
     spid_secret_name: dashboard-secret-spid
     spid_storage_account_share_name: dpt-services-prod-sashare-spid
-
-    devitalia_cron_schedule: "1 2 * * *"
-    devitalia_datadir: /tmp
-    devitalia_env: production
 
   resources:
     # For each of the following objects, set limits
@@ -114,6 +115,13 @@ dashboard:
     # requests:
     #   cpu: 100m
     #   memory: 128Mi
+    dashboard_scripts_cie:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
     dashboard_scripts_devitalia:
       requests:
         cpu: 500m
@@ -121,14 +129,14 @@ dashboard:
       limits:
         cpu: 1000m
         memory: 2Gi
-    dashboard_scripts_spid:
+    dashboard_scripts_repubblica_digitale:
       requests:
         cpu: 500m
         memory: 1Gi
       limits:
         cpu: 1000m
         memory: 2Gi
-    dashboard_scripts_cie:
+    dashboard_scripts_spid:
       requests:
         cpu: 500m
         memory: 1Gi

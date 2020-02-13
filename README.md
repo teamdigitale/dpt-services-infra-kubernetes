@@ -127,7 +127,7 @@ kubectl apply -f storage
 
 It's strongly recommended to make Kubernetes retrieve secrets from the Azure Keyvault, instead of manually creating and editing secrets directly in Kubernetes. This approach is safer and allows an easier maintenance of the Kubernetes cluster.
 
-The secrets synchronization and container injection is realized using [this component](https://github.com/SparebankenVest/azure-key-vault-to-kubernetes).
+The secrets synchronization and container injection is realized using [this component](https://akv2k8s.io/) (repo [here](https://github.com/SparebankenVest/azure-key-vault-to-kubernetes)).
 
 Add the *spv-charts* repo and update the repo index:
 
@@ -168,6 +168,34 @@ Each chart that makes use of one or more secrets already contains an *azure-key-
 * AzureKeyVaultSecret objects that trigger the pull of the secrets from the Azure Keyvault, synchronize the value with the local Kubernetes secret, and inject them as environment variables in the chart containers as needed
 
 * Moreover, environment variables are imported in the *deployment.yaml* files with the value format `name-of-the-variable@azurekeyvault`
+
+#### Deploy the cert-manager    
+
+The cert-manager is a Kubernetes component that takes care of adding and renewing TLS certificates for any virtual host specified in the ingress, through the integration with some providers (i.e. letsencrypt).
+
+> **Warning:** If the first command generates a validation error, you should update the *kubectl* client.
+
+To deploy the cert-manager run: 
+
+```shell    
+kubectl create namespace cert-manager
+
+helm repo add jetstack https://charts.jetstack.io   
+helm repo update
+helm install \
+    --namespace cert-manager \
+    --version v0.13.0 \
+    cert-manager \
+    jetstack/cert-manager
+```
+
+#### Apply cert-manager issuers
+
+To integrate the cert-manager with the *letsencrypt certificate issuer*, run:
+
+```shell
+kubectl apply -f system/common-cert-manager-issuers.yaml
+```
 
 #### Deploy the ingress controller
 

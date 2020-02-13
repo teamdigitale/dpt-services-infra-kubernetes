@@ -24,15 +24,15 @@ spec:
             resources:
 {{ toYaml .Values.dashboard.resources.dashboard_scripts_devitalia | indent 14 }}
             env:
-              - name: MONGODB_HOST
-                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_host }}"
-              - name: MONGODB_DB
-                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_db }}"
-              - name: MONGODB_DB_AUTHDB
-                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_db_authdb }}"
-              - name: MONGODB_DB_USER
-                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_db_user }}"
-              - name: MONGODB_DB_PASS
+              - name: MONGODB_HOSTNAME
+                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_hostname }}"
+              - name: MONGODB_DATABASE
+                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_database }}"
+              - name: MONGODB_AUTHDB
+                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_authdb }}"
+              - name: MONGODB_USERNAME
+                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_username }}"
+              - name: MONGODB_PASSWORD
                 valueFrom:
                   secretKeyRef:
                     name: dashboard-metabase-secrets
@@ -41,54 +41,54 @@ spec:
                 value: "{{ .Values.dashboard.dashboard_scripts.devitalia_datadir }}"
               - name: DEVITALIA_ENV
                 value: "{{ .Values.dashboard.dashboard_scripts.devitalia_env }}"
-              - name: TOKEN_GITHUB
+              - name: DEVITALIA_TOKEN_GITHUB
                 valueFrom:
                   secretKeyRef:
                     name: dashboard-metabase-secrets
-                    key: token_github
-              - name: TOKEN_SLACK
+                    key: devitalia-token-github
+              - name: DEVITALIA_TOKEN_SLACK
                 valueFrom:
                   secretKeyRef:
                     name: dashboard-metabase-secrets
-                    key: token_slack
-              - name: FORUM_API_KEY
+                    key: devitalia-token-slack
+              - name: DEVITALIA_FORUM_API_KEY
                 valueFrom:
                   secretKeyRef:
                     name: dashboard-metabase-secrets
-                    key: forum_api_key
-              - name: GOOGLE_WPID
+                    key: devitalia-forum-api-key
+              - name: DEVITALIA_GOOGLE_WPID
                 valueFrom:
                   secretKeyRef:
                     name: dashboard-metabase-secrets
-                    key: google_wpid
-              - name: GOOGLE_PROJECT_ID
+                    key: devitalia-google-wpid
+              - name: DEVITALIA_GOOGLE_PROJECT_ID
                 valueFrom:
                   secretKeyRef:
                     name: dashboard-metabase-secrets
-                    key: google_project_id
-              - name: GOOGLE_PRIVATE_ID
+                    key: devitalia-google-project-id
+              - name: DEVITALIA_GOOGLE_PRIVATE_ID
                 valueFrom:
                   secretKeyRef:
                     name: dashboard-metabase-secrets
-                    key: google_private_id
-              - name: GOOGLE_PRIVATE_KEY
+                    key: devitalia-google-private-id
+              - name: DEVITALIA_GOOGLE_PRIVATE_KEY
                 valueFrom:
                   secretKeyRef:
                     name: dashboard-metabase-secrets
-                    key: google_private_key
-              - name: GOOGLE_CLIENT_EMAIL
+                    key: devitalia-google-private-key
+              - name: DEVITALIA_GOOGLE_CLIENT_EMAIL
                 valueFrom:
                   secretKeyRef:
                     name: dashboard-metabase-secrets
-                    key: google_client_email
-              - name: GOOGLE_CLIENT_ID
+                    key: devitalia-google-client-email
+              - name: DEVITALIA_GOOGLE_CLIENT_ID
                 valueFrom:
                   secretKeyRef:
                     name: dashboard-metabase-secrets
-                    key: google_client_id
-              - name: GOOGLE_CLIENT_X509_CERT_URL
+                    key: devitalia-google-client-id
+              - name: DEVITALIA_GOOGLE_CLIENT_X509_CERT_URL
                 valueFrom:
                   secretKeyRef:
                     name: dashboard-metabase-secrets
-                    key: google_client_x509_cert_url
+                    key: devitalia-google-client-x509-cert-url
           restartPolicy: OnFailure

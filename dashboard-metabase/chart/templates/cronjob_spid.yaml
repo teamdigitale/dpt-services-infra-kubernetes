@@ -28,15 +28,15 @@ spec:
                 value: "{{ .Values.dashboard.dashboard_scripts.spid_datadir }}"
               - name: SPID_ENV
                 value: "{{ .Values.dashboard.dashboard_scripts.spid_env }}"
-              - name: MONGODB_HOST
-                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_host }}"
-              - name: MONGODB_DB
-                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_db }}"
-              - name: MONGODB_DB_AUTHDB
-                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_db_authdb }}"
-              - name: MONGODB_DB_USER
-                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_db_user }}"
-              - name: MONGODB_DB_PASS
+              - name: MONGODB_HOSTNAME
+                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_hostname }}"
+              - name: MONGODB_DATABASE
+                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_database }}"
+              - name: MONGODB_AUTHDB
+                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_authdb }}"
+              - name: MONGODB_USERNAME
+                value: "{{ .Values.dashboard.dashboard_scripts.mongodb_username }}"
+              - name: MONGODB_PASSWORD
                 valueFrom:
                   secretKeyRef:
                     name: dashboard-metabase-secrets

@@ -20,7 +20,7 @@ spec:
           - name: {{ template "dashboard.fullname" . }}-script-repubblica-digitale
             image: "{{ .Values.global.registry }}{{ .Values.dashboard.images.dashboard_scripts.repository }}:{{ tpl .Values.dashboard.images.dashboard_scripts.tag . }}"
             imagePullPolicy: {{ .Values.dashboard.images.dashboard_scripts.pullPolicy }}
-            command: ["/bin/sh"]
+            command: ["/bin/bash"]
             args: ["-c", "source /opt/ingestion_scripts/repubblica-digitale/process.sh"]
             resources:
 {{ toYaml .Values.dashboard.resources.dashboard_scripts_repubblica_digitale | indent 14 }}

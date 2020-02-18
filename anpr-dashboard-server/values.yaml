@@ -17,7 +17,7 @@ anprDashboardServer:
 
   images:
     anprDashboardServer:
-      repository: docker.io/teamdigitale/anpr-dashboard
+      repository: docker.io/teamdigitale/anpr-dashboard-server
       tag: latest
       pullPolicy: Always
     anprDashboardServerCronjob:

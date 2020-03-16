@@ -41,13 +41,6 @@ spec:
                 value: "{{ .Values.dashboard.dashboard_scripts.cie_datadir }}"
               - name: CIE_ENV
                 value: "{{ .Values.dashboard.dashboard_scripts.cie_env }}"
-            volumeMounts:
-            - name: dashboard-secret-cie
-              mountPath: {{ .Values.dashboard.dashboard_scripts.cie_datadir }}
+              - name: CIE_STATS_URL
+                value: "{{ .Values.dashboard.dashboard_scripts.cie_stats_url }}"
           restartPolicy: OnFailure
-          volumes:
-          - name: dashboard-secret-cie
-            azureFile:
-              secretName: {{ .Values.dashboard.dashboard_scripts.cie_secret_name }}
-              shareName: {{ .Values.dashboard.dashboard_scripts.cie_storage_account_share_name }}
-              readOnly: false

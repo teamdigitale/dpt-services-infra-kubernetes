@@ -91,6 +91,7 @@ dashboard:
     cie_datadir: /opt/ingestion_scripts/data/cie
     cie_env: production
     cie_secret_name: dashboard-secret-cie
+    cie_stats_url: https://www.cartaidentita.interno.gov.it/statistiche/progettocie.csv
     cie_storage_account_share_name: dpt-services-prod-sashare-cie
 
     devitalia_cron_schedule: "1 2 * * *"

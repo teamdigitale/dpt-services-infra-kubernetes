@@ -298,6 +298,12 @@ For example:
 helm delete my-app
 ```
 
+## Redirect containers
+
+Some NGINX containers are deployed to perform some custom redirects. These are a group of helm-charts prefixed with the keyword *redirects-*.
+
+It's strongly suggested to group them properly, for example in a dedicated namespace (i.e. *redirects*).
+
 ## How to contribute
 
 Contributions are welcome. Feel free to [open issues](./issues) and submit a [pull request](./pulls) at any time.

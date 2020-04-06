@@ -1,0 +1,9 @@
+---
+
+apiVersion: v1
+
+name: eighteen-app-spid-testenv
+description: A SPID IDP test environment for 18app.
+
+version: 0.1.0
+appVersion: "fix-c14n-issue-169"

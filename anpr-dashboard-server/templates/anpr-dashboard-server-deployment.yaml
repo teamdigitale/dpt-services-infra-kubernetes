@@ -12,15 +12,8 @@ metadata:
     heritage: {{ .Release.Service }}
 spec:
   replicas: {{ .Values.anprDashboardServer.replicaCount }}
-  {{- if .Values.anprDashboardServer.strategy }}
-  {{- with .Values.anprDashboardServer.strategy }}
   strategy:
-    type: {{ toYaml .type }}
-    rollingUpdate:
-      maxUnavailable: {{ toYaml .rollingUpdate.maxUnavailable }}
-      maxSurge: {{ toYaml .rollingUpdate.maxSurge }}
-  {{- end }}
-  {{- end }}
+    type: Recreate
   revisionHistoryLimit: {{ .Values.anprDashboardServer.revisionHistoryLimit }}
   selector:
     matchLabels:
@@ -34,6 +27,9 @@ spec:
       annotations:
         timestamp: "{{ date "20060102150405" .Release.Time }}"
     spec:
+      securityContext:
+        fsGroup: 65534
+
       containers:
         - name: anpr-dashboard-server
           image: "{{ .Values.global.registry }}{{ .Values.anprDashboardServer.images.anprDashboardServer.repository }}:{{ tpl .Values.anprDashboardServer.images.anprDashboardServer.tag . }}"
@@ -98,7 +94,7 @@ spec:
       volumes:
         - name: db
           persistentVolumeClaim:
-            claimName: anpr-dashboard-server-db
+            claimName: anpr-dashboard-server-database
         - name: cache
           persistentVolumeClaim:
             claimName: anpr-dashboard-server-cache

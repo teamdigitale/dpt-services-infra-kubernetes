@@ -19,14 +19,8 @@ certs_anpr_italia_it:
       add_header X-Content-Type-Options nosniff;
       add_header X-XSS-Protection "1; mode=block";
       add_header X-Frame-Options "SAMEORIGIN";
-      client_max_body_size 2M;
 
       root /var/www/certs.anpr.italia.it;
-
-      location /c23k2mwuj9rh9z1g8fdy {
-        alias /var/www/certs.anpr.italia.it/c23k2mwuj9rh9z1g8fdy/test-certs.tar;
-        add_header Content-disposition 'attachment; filename="test-certs.tar"';
-      }
     }
 
   services:

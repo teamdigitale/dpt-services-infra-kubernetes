@@ -34,7 +34,7 @@ spec:
               readOnly: true
             - name: certs-anpr-italia-it
               mountPath: /var/www/certs.anpr.italia.it/c23k2mwuj9rh9z1g8fdy
-              readOnly: true
+              readOnly: false
 
           ports:
             - name: http

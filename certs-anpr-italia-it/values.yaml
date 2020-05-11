@@ -1,0 +1,70 @@
+---
+
+global:
+  registry: ''
+
+certs_anpr_italia_it:
+  images:
+    nginx:
+      repository: docker.io/nginx
+      tag: 1.17.3-alpine
+      pullPolicy: IfNotPresent
+
+  nginx_config: |
+    server {
+      listen 80;
+      listen [::]:80;
+      server_name certs.anpr.italia.it;
+
+      add_header X-Content-Type-Options nosniff;
+      add_header X-XSS-Protection "1; mode=block";
+      add_header X-Frame-Options "SAMEORIGIN";
+      client_max_body_size 2M;
+
+      root /var/www/certs.anpr.italia.it;
+
+      location /c23k2mwuj9rh9z1g8fdy {
+        alias /var/www/certs.anpr.italia.it/c23k2mwuj9rh9z1g8fdy/test-certs.tar;
+        add_header Content-disposition 'attachment; filename="test-certs.tar"';
+      }
+    }
+
+  services:
+    nginx:
+      httpPort:
+        servicePort: 80
+        containerPort: 80
+
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      cert-manager.io/acme-challenge-type: http01
+    path: /
+    hosts:
+      - certs.anpr.italia.it
+    tls:
+      - hosts:
+          - certs.anpr.italia.it
+        secretName: certs-anpr-italia-it-prod-tls
+
+  resources:
+    # For each of the following objects, set limits
+    # removing the curly brackets after resources and
+    # uncommenting the lines below.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+    nginx: {}
+
+  nodeSelector: {}
+
+  tolerations: {}
+
+  affinity: {}

@@ -1,0 +1,65 @@
+---
+
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "certs-anpr-italia-it.fullname" . }}-nginx
+  labels:
+    app: {{ template "certs-anpr-italia-it.name" . }}
+    chart: {{ template "certs-anpr-italia-it.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.certs_anpr_italia_it.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "certs-anpr-italia-it.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "certs-anpr-italia-it.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        timestamp: "{{ date "20060102150405" .Release.Time }}"
+    spec:
+      containers:
+        - name: nginx
+          image: "{{ .Values.global.registry }}{{ .Values.certs_anpr_italia_it.images.nginx.repository }}:{{ tpl .Values.certs_anpr_italia_it.images.nginx.tag . }}"
+          imagePullPolicy: {{ .Values.certs_anpr_italia_it.images.nginx.pullPolicy }}
+
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
+            - name: certs-anpr-italia-it
+              mountPath: /var/www/certs.anpr.italia.it/c23k2mwuj9rh9z1g8fdy
+              readOnly: true
+
+          ports:
+            - name: http
+              containerPort: {{ .Values.certs_anpr_italia_it.services.nginx.httpPort.containerPort }}
+              protocol: {{ .Values.certs_anpr_italia_it.services.nginx.httpPort.protocol }}
+
+          resources:
+{{ toYaml .Values.certs_anpr_italia_it.resources.backend | indent 12 }}
+    {{- with .Values.certs_anpr_italia_it.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.certs_anpr_italia_it.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.certs_anpr_italia_it.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: {{ template "certs-anpr-italia-it.fullname" . }}-nginx-configmap
+        - name: certs-anpr-italia-it
+          persistentVolumeClaim:
+            claimName: certs-anpr-italia-it

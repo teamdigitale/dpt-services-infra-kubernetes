@@ -1,0 +1,14 @@
+# Certs ANPR
+apiVersion: v1
+
+kind: PersistentVolumeClaim
+metadata:
+  name: certs-anpr-italia-it
+  namespace: anpr
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefile-standard
+  resources:
+    requests:
+      storage: 5Gi

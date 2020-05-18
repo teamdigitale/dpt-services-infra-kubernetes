@@ -44,7 +44,7 @@ spec:
             volumeMounts:
             - name: dashboard-secret-spid
               mountPath: {{ .Values.dashboard.dashboard_scripts.spid_datadir }}
-          restartPolicy: OnFailure
+          restartPolicy: Never
           volumes:
           - name: dashboard-secret-spid
             azureFile:

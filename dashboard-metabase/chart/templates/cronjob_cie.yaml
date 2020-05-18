@@ -43,4 +43,4 @@ spec:
                 value: "{{ .Values.dashboard.dashboard_scripts.cie_env }}"
               - name: CIE_STATS_URL
                 value: "{{ .Values.dashboard.dashboard_scripts.cie_stats_url }}"
-          restartPolicy: OnFailure
+          restartPolicy: Never

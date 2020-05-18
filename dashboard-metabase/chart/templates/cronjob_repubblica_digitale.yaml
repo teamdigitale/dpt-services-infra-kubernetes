@@ -15,7 +15,7 @@ spec:
           labels:
             app: "{{ template "dashboard.fullname" . }}-scripts-repubblica-digitale"
         spec:
-          restartPolicy: OnFailure
+          restartPolicy: Never
           containers:
           - name: {{ template "dashboard.fullname" . }}-script-repubblica-digitale
             image: "{{ .Values.global.registry }}{{ .Values.dashboard.images.dashboard_scripts.repository }}:{{ tpl .Values.dashboard.images.dashboard_scripts.tag . }}"

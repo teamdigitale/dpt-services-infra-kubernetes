@@ -17,7 +17,7 @@ spec:
           labels:
             app: "{{ template "anpr-dashboard-server.fullname" . }}"
         spec:
-          restartPolicy: OnFailure
+          restartPolicy: Never
 
           containers:
           - name: {{ template "anpr-dashboard-server.fullname" . }}

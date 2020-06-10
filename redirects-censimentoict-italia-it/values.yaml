@@ -12,9 +12,14 @@ redirects_censimentoict_italia_it:
 
   nginx_config: |
     server {
+      server_name *.censimentoict.italia.it;
+      return 301 https://censimentoict.italia.it;
+    }
+
+    server {
       listen 80;
       listen [::]:80;
-      server_name *.censimentoict.italia.it censimentoict.italia.it;
+      server_name censimentoict.italia.it;
 
       location / {
         proxy_pass https://docs.italia.it/italia/piano-triennale-ict/censimento-ict/it/bozza/;
@@ -45,9 +50,11 @@ redirects_censimentoict_italia_it:
     path: /
     hosts:
       - censimentoict.italia.it
+      - www.censimentoict.italia.it
     tls:
       - hosts:
           - censimentoict.italia.it
+          - www.censimentoict.italia.it
         secretName: censimentoict-italia-it-prod-tls
 
   resources:

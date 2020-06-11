@@ -1,0 +1,14 @@
+---
+
+apiVersion: v2
+
+name: cla-assistant
+description: CLA Assistant
+
+version: 0.1.0
+appVersion: 2.8.1
+
+dependencies:
+- name: mongodb
+  version: 7.8.9
+  repository: https://kubernetes-charts.storage.googleapis.com

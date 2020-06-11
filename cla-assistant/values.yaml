@@ -1,0 +1,71 @@
+---
+
+global:
+  registry: ''
+
+mongodb:
+  mongodbDatabase: cla-assistant
+  mongodbUsername: dipartimentoinnovazione
+  existingSecret: cla-assistant-secrets
+  persistence:
+    existingClaim: cla-assistant
+  resources:
+    requests:
+      cpu: 1000m
+      memory: 6Gi
+    limits:
+      cpu: 2000m
+      memory: 10Gi
+
+cla_assistant:
+  images:
+    cla_assistant:
+      repository: docker.io/teamdigitale/cla-assistant
+      tag: latest
+      pullPolicy: IfNotPresent
+
+  env:
+    host: cla.developers.italia.it
+    protocol: https
+    port: 5000
+    github_admin_users: sebbalex,lucaprete,libremente,luciopileggi
+
+  services:
+    cla_assistant:
+      httpPort:
+        servicePort: 5000
+        containerPort: 5000
+
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: nginx
+      kubernetes.io/tls-acme: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      cert-manager.io/acme-challenge-type: http01
+    path: /
+    hosts:
+      - cla.developers.italia.it
+    tls:
+      - hosts:
+          - cla.developers.italia.it
+        secretName: cla-assistant-prod-tls
+
+  resources:
+    # For each of the following objects, set limits
+    # removing the curly brackets after resources and
+    # uncommenting the lines below.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+    cla_assistant: {}
+
+  nodeSelector: {}
+
+  tolerations: {}
+
+  affinity: {}

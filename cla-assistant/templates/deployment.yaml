@@ -1,0 +1,78 @@
+---
+
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "cla-assistant.fullname" . }}
+  labels:
+    app: {{ template "cla-assistant.name" . }}
+    chart: {{ template "cla-assistant.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.cla_assistant.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "cla-assistant.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "cla-assistant.name" . }}
+        release: {{ .Release.Name }}
+      annotations:
+        timestamp: "{{ date "20060102150405" now }}"
+    spec:
+      containers:
+        - name: cla-assistant
+          image: "{{ .Values.global.registry }}{{ .Values.cla_assistant.images.cla_assistant.repository }}:{{ tpl .Values.cla_assistant.images.cla_assistant.tag . }}"
+          imagePullPolicy: {{ .Values.cla_assistant.images.cla_assistant.pullPolicy }}
+
+          env:
+            - name: HOST
+              value: "{{ .Values.cla_assistant.env.host }}"
+            - name: PROTOCOL
+              value: "{{ .Values.cla_assistant.env.protocol }}"
+            - name: PORT
+              value: "{{ .Values.cla_assistant.env.port }}"
+            - name: GITHUB_ADMIN_USERS
+              value: "{{ .Values.cla_assistant.env.github_admin_users }}"
+            - name: MONGODB
+              valueFrom:
+                secretKeyRef:
+                  name: cla-assistant-secrets
+                  key: mongodb
+            - name: GITHUB_CLIENT
+              valueFrom:
+                secretKeyRef:
+                  name: cla-assistant-secrets
+                  key: github-client
+            - name: GITHUB_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: cla-assistant-secrets
+                  key: github-secret
+            - name: GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: cla-assistant-secrets
+                  key: github-token
+
+          ports:
+            - name: http
+              containerPort: {{ .Values.cla_assistant.services.cla_assistant.httpPort.containerPort }}
+              protocol: {{ .Values.cla_assistant.services.cla_assistant.httpPort.protocol }}
+
+          resources: {{ toYaml .Values.cla_assistant.resources.cla_assistant | nindent 12 }}
+    {{- with .Values.cla_assistant.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.cla_assistant.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.cla_assistant.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

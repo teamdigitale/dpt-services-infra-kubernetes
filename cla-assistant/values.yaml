@@ -28,7 +28,7 @@ cla_assistant:
     host: cla.developers.italia.it
     protocol: https
     port: 5000
-    github_admin_users: sebbalex,lucaprete,libremente,luciopileggi
+    github_admin_users: LucaPrete,sebbalex,libremente,luciopileggi
 
   services:
     cla_assistant:

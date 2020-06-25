@@ -32,7 +32,7 @@ cla_assistant:
     host: cla.developers.italia.it
     protocol: https
     port: 5000
-    github_admin_users: LucaPrete,sebbalex,libremente,luciopileggi
+    github_admin_users: immuniopensource,immunistaff
 
   services:
     cla_assistant:

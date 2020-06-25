@@ -24,7 +24,7 @@ Create a secret in the Azure keyvault named *k8s-secrets-cla-assistant*, formatt
 
 ### Storage and PVCs
 
-Add the *cla-assistant* Persistent Volume Claims (PVC):
+Add the *cla-assistant* Persistent Volume Claims (PVCs):
 
 ```shell
 kubectl apply -f storage/prod-pvc-cla-assistant.yaml
@@ -40,3 +40,7 @@ helm install \
   cla-assistant \
   cla-assistant
 ```
+
+### MongoDB database backup
+
+A [cronjob](templates/cronjob-backup.yaml) takes care of MongoDB backups. The job saves backups on an Azurefile-based PVC, which can also be browsed from the [Azure GUI](https://portal.azure.com). By default, the backup runs every night at midnight and the last 30 backups are retained. [Default values](values.yaml) can be modified editing the *backup_schedule* and the *daily_backup_retention* variables.

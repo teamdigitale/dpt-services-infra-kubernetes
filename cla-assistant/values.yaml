@@ -23,6 +23,10 @@ cla_assistant:
       repository: docker.io/teamdigitale/cla-assistant
       tag: latest
       pullPolicy: IfNotPresent
+    cla_assistant_backup:
+      repository: docker.io/bitnami/mongodb
+      tag: latest
+      pullPolicy: IfNotPresent
 
   env:
     host: cla.developers.italia.it
@@ -52,6 +56,10 @@ cla_assistant:
           - cla.developers.italia.it
         secretName: cla-assistant-prod-tls
 
+  backup_schedule: "0 * * * *"
+  backup_output_dir: daily_backups
+  daily_backup_retention: "30"
+
   resources:
     # For each of the following objects, set limits
     # removing the curly brackets after resources and
@@ -63,6 +71,7 @@ cla_assistant:
     #   cpu: 100m
     #   memory: 128Mi
     cla_assistant: {}
+    cla_assistant_backup: {}
 
   nodeSelector: {}
 

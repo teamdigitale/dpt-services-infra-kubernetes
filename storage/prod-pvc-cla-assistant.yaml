@@ -14,3 +14,20 @@ spec:
   resources:
     requests:
       storage: 50Gi
+
+---
+
+# Storage account for CLA assistant Mongo DB backup
+apiVersion: v1
+
+kind: PersistentVolumeClaim
+metadata:
+  name: cla-assistant-backup
+  namespace: cla
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: azurefile-standard
+  resources:
+    requests:
+      storage: 50Gi

@@ -56,7 +56,7 @@ cla_assistant:
           - cla.developers.italia.it
         secretName: cla-assistant-prod-tls
 
-  backup_schedule: "0 * * * *"
+  backup_schedule: "0 3 * * *"
   backup_output_dir: daily_backups
   daily_backup_retention: "30"
 

@@ -169,6 +169,67 @@ Each chart that makes use of one or more secrets already contains an *azure-key-
 
 * Moreover, environment variables are imported in the *deployment.yaml* files with the value format `name-of-the-variable@azurekeyvault`
 
+#### Deploy Velero for backups
+
+[Velero](https://velero.io) and its [Azure plugin](https://github.com/vmware-tanzu/velero-plugin-for-microsoft-azure) are used to backup Kubernetes resources, including taking volume snapshots, to an Azure blob storage account.
+
+Make sure the service principal of Kubernetes (under registered applications in your [Azure Portal](https://portal.azure.com)) has a secret associated. Copy both the application client id and the secret. You'll need them in few minutes.
+
+Create the *backups* namespace:
+
+```shell
+kubectl create namespace backups
+```
+
+Edit the template variables below (*YOUR_SERVICE_PRINCIPAL_CLIENT_ID* and *YOUR_SERVICE_PRINCIPAL_SECRET*) and create a secret in the your Azure Keyvault called *k8s-secrets-velero*:
+
+```json
+{
+    "cloud": "AZURE_SUBSCRIPTION_ID=737cc34a-38e9-485a-8ea8-6268ca423db1\nAZURE_TENANT_ID=f7f7d6c7-92de-488e-b37e-8963207c7b86\nAZURE_CLIENT_ID=YOUR_SERVICE_PRINCIPAL_CLIENT_ID\nAZURE_CLIENT_SECRET=YOUR_SERVICE_PRINCIPAL_CLIENT_SECRET\nAZURE_RESOURCE_GROUP=dpt-services-prod-rg\nAZURE_CLOUD_NAME=AzurePublicCloud"
+}
+```
+
+Synchronize the Azure Keyvault secret with the local Kubernetes instance:
+
+```shell
+kubectl apply -f system/prod-velero-secrets.yaml
+```
+
+Install Velero:
+
+```shell
+# Add local Velero Helm repository
+helm repo add vmware-tanzu https://vmware-tanzu.github.io/helm-charts
+helm repo update
+
+# Install/upgrade Velero
+helm upgrade \
+    -f system/prod-velero-custom.yaml \
+    --namespace backups \
+    --install \
+    velero vmware-tanzu/velero
+```
+
+Enable backups for all namespaces:
+
+```shell
+kubectl apply -f system/common-velero-backup.yaml
+```
+
+List active schedules and backups:
+
+```shell
+kubectl get schedules -n backups
+kubectl get backups -n backups
+```
+
+Describe a backup and see its logs:
+
+```shell
+velero backup describe -n backups {backup-name}
+velero backup logs -n backups {backup-name}
+```
+
 #### Deploy the cert-manager    
 
 The cert-manager is a Kubernetes component that takes care of adding and renewing TLS certificates for any virtual host specified in the ingress, through the integration with some providers (i.e. letsencrypt).

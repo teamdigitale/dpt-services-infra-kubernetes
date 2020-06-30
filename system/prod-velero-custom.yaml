@@ -1,0 +1,32 @@
+---
+
+configuration:
+  provider: azure
+  backupStorageLocation:
+    name: default
+    bucket: dpt-services-prod-sc-backups
+    config:
+      resourceGroup: dpt-services-prod-rg
+      storageAccount: dptservicesprodsabackups
+      subscriptionId: 737cc34a-38e9-485a-8ea8-6268ca423db1
+  volumeSnapshotLocation:
+    name: default
+    bucket: dpt-services-prod-sc-backups
+    resourceGroup: dpt-services-prod-rg
+    storageAccount: dptservicesprodsabackups
+    subscriptionId: 737cc34a-38e9-485a-8ea8-6268ca423db1
+
+image:
+  repository: velero/velero
+  tag: v1.4.0
+  pullPolicy: IfNotPresent
+
+initContainers:
+  - name: velero-plugin-for-microsoft-azure
+    image: velero/velero-plugin-for-microsoft-azure:v1.1.0
+    volumeMounts:
+      - mountPath: /target
+        name: plugins
+
+credentials:
+  existingSecret: velero-secrets

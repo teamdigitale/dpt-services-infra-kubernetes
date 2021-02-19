@@ -77,6 +77,13 @@ The chart will install the cronjob to periodically ingest new data. It will also
 
 * MongoDB (where data are saved and read by Metabase)
 
+In order to upgrade all components (cronjob included) it is necessary to uninstall the entire chart as follow
+
+```shell
+helm uninstall -n dashboards dashboard-metabase
+```
+
+Download dependencies if they not yet exist in dashboard-metabase/chart/charts and then install
 ```shell
 cd dashboard-metabase/chart && helm dep update && cd ../../
 

@@ -56,7 +56,7 @@ helm upgrade \
 kubectl -n monitoring port-forward prometheus-prometheus-prometheus-oper-prometheus-0 9090
 ```
 
-Then, access http://localhost:9000
+Then, access http://localhost:9090
 
 ## Access Alertmanager
 

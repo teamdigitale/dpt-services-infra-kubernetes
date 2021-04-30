@@ -280,34 +280,6 @@ helm install \
     stable/nginx-ingress
 ```
 
-#### Deploy Keel to automate deployments
-
-> WARNING: Keel still supports Helm 2 ONLY. Please do not follow this section, until this warning is removed.
-
-[Keel](https://keel.sh/) helps to automate deployment activities.
-
-Before proceeding, make sure the [Keel bot](https://keel.sh/docs/#configuring-approvals-with-slack) is correctly configured in Slack.
-```shell
-# Create dedicated namespace
-kubectl create namespace keel
-
-# Add repo and update dependencies
-helm repo add keel-charts https://charts.keel.sh
-helm repo update
-
-# Install keel
-helm upgrade \
-    --install \
-    --set slack.enabled="true" \
-    --set slack.botName="keel" \
-    --set slack.channel="log_anpr" \
-    --set slack.approvalsChannel="log_anpr" \
-    --set slack.token="YOUR_SLACK_BOT_TOKEN" \
-    --namespace=keel \
-    keel \
-    keel-charts/keel
-```
-
 ### Deploy applications
 
 Applications are packaged using helm charts.

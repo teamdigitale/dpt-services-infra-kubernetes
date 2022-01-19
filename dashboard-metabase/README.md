@@ -47,7 +47,7 @@ The value of the secret should be in the following format:
   "forum_api_key": "YOUR_FORUM_API_KEY",
   "token_github": "YOUR_GITHUB_TOKEN",
   "token_slack": "YOUR_SLACK_TOKEN",
-  "token_mailgun": "YOUR_MAILGUN_TOKEN",
+  "padigitale-token-mailgun": "YOUR_MAILGUN_TOKEN",
   "google_project_id": "YOUR_GOOGLE_PROJECT_ID",
   "google_private_id": "YOUR_GOOGLE_PRIVATE_ID",
   "google_private_key": "YOUR_GOOGLE_PRIVATE_KEY",

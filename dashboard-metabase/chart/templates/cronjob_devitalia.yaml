@@ -46,6 +46,11 @@ spec:
                   secretKeyRef:
                     name: dashboard-metabase-secrets
                     key: devitalia-token-github
+              - name: DEVITALIA_TEAMID_SLACK
+                valueFrom:
+                  secretKeyRef:
+                    name: dashboard-metabase-secrets
+                    key: devitalia-teamid-slack
               - name: DEVITALIA_TOKEN_SLACK
                 valueFrom:
                   secretKeyRef:

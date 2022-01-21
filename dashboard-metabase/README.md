@@ -46,6 +46,7 @@ The value of the secret should be in the following format:
   "mongodb-password": "YOUR_MONGODB_PASSWORD",
   "forum_api_key": "YOUR_FORUM_API_KEY",
   "token_github": "YOUR_GITHUB_TOKEN",
+  "teamid_slack": "YOUR_SLACK_TEAMID",
   "token_slack": "YOUR_SLACK_TOKEN",
   "padigitale-token-mailgun": "YOUR_MAILGUN_TOKEN",
   "google_project_id": "YOUR_GOOGLE_PROJECT_ID",
